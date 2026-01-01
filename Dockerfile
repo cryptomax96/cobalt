@@ -14,8 +14,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 
 RUN pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
 
-# Create fake .git with version info for platforms that do shallow clones
-RUN mkdir -p /prod/api/.git && echo "ref: refs/heads/main" > /prod/api/.git/HEAD
+# Create complete fake .git structure for platforms that do shallow clones
+RUN mkdir -p /prod/api/.git/logs && \
+    mkdir -p /prod/api/.git/refs/heads && \
+    echo "ref: refs/heads/main" > /prod/api/.git/HEAD && \
+    echo "0000000000000000000000000000000000000000 48929620859e087c3bd6aac705bbe3e9200eed7e cobalt <noreply@cobalt.tools> 1735714064 +0000	commit: cobalt-singapore" > /prod/api/.git/logs/HEAD && \
+    echo "48929620859e087c3bd6aac705bbe3e9200eed7e" > /prod/api/.git/refs/heads/main
 
 FROM base AS api
 WORKDIR /app
