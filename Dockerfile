@@ -14,11 +14,13 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 
 RUN pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
 
+# Create fake .git with version info for platforms that do shallow clones
+RUN mkdir -p /prod/api/.git && echo "ref: refs/heads/main" > /prod/api/.git/HEAD
+
 FROM base AS api
 WORKDIR /app
 
 COPY --from=build --chown=node:node /prod/api /app
-COPY --from=build --chown=node:node /app/.git /app/.git
 
 USER node
 
