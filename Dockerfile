@@ -15,11 +15,11 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 RUN pnpm deploy --filter=@imput/cobalt-api --prod /prod/api
 
 # Create complete fake .git structure for platforms that do shallow clones
-RUN mkdir -p /prod/api/.git/logs && \
-    mkdir -p /prod/api/.git/refs/heads && \
+RUN mkdir -p /prod/api/.git/logs /prod/api/.git/refs/heads && \
     echo "ref: refs/heads/main" > /prod/api/.git/HEAD && \
-    echo "0000000000000000000000000000000000000000 48929620859e087c3bd6aac705bbe3e9200eed7e cobalt <noreply@cobalt.tools> 1735714064 +0000	commit: cobalt-singapore" > /prod/api/.git/logs/HEAD && \
-    echo "48929620859e087c3bd6aac705bbe3e9200eed7e" > /prod/api/.git/refs/heads/main
+    echo "0000000000000000000000000000000000000000 646d99473d46e7dd455d1374cd14fb27de324fda cobalt <noreply@cobalt.tools> 1735714574 +0000	commit: cobalt-singapore" > /prod/api/.git/logs/HEAD && \
+    echo "646d99473d46e7dd455d1374cd14fb27de324fda" > /prod/api/.git/refs/heads/main && \
+    printf '[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = false\n[remote "origin"]\n\turl = https://github.com/imputnet/cobalt\n\tfetch = +refs/heads/*:refs/remotes/origin/*\n[branch "main"]\n\tremote = origin\n\tmerge = refs/heads/main\n' > /prod/api/.git/config
 
 FROM base AS api
 WORKDIR /app
